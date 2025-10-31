@@ -43,6 +43,7 @@ app.add_middleware(
 
 # x402 Payment Middleware
 payment_address = os.getenv("PAYMENT_ADDRESS", "0x01D11F7e1a46AbFC6092d7be484895D2d505095c")
+base_url = os.getenv("BASE_URL", "https://perps-funding-pulse-production.up.railway.app")
 free_mode = os.getenv("FREE_MODE", "false").lower() == "true"
 
 if not free_mode:
@@ -402,8 +403,6 @@ async def root():
 @app.head("/.well-known/agent.json")
 async def agent_metadata():
     """AP2 (Agent Payments Protocol) metadata - returns HTTP 200"""
-    base_url = os.getenv("BASE_URL", "https://perps-funding-pulse-production.up.railway.app")
-
     agent_json = {
         "name": "Perps Funding Pulse",
         "description": "Real-time perpetual futures funding rates, open interest, and market skew across major exchanges (Binance, Bybit, OKX, Hyperliquid, dYdX, GMX)",
@@ -545,8 +544,6 @@ async def agent_metadata():
 @app.head("/.well-known/x402")
 async def x402_metadata():
     """x402 protocol metadata for service discovery"""
-    base_url = os.getenv("BASE_URL", "https://perps-funding-pulse-production.up.railway.app")
-
     metadata = {
         "x402Version": 1,
         "accepts": [
