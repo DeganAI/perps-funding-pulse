@@ -654,6 +654,31 @@ async def get_funding_data(request: FundingRequest):
         )
 
 
+@app.get("/entrypoints/perps-funding-pulse/invoke")
+@app.head("/entrypoints/perps-funding-pulse/invoke")
+async def entrypoint_perps_funding_get():
+    """
+    x402 discovery endpoint - returns HTTP 402 with payment requirements
+    """
+    metadata = {
+        "x402Version": 1,
+        "accepts": [
+            {
+                "scheme": "exact",
+                "network": "base",
+                "maxAmountRequired": "50000",
+                "resource": f"{base_url}/entrypoints/perps-funding-pulse/invoke",
+                "description": "Fetch current funding rate, next tick, and open interest for perps markets",
+                "mimeType": "application/json",
+                "payTo": payment_address,
+                "maxTimeoutSeconds": 30,
+                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            }
+        ]
+    }
+    return JSONResponse(content=metadata, status_code=402)
+
+
 @app.post("/entrypoints/perps-funding-pulse/invoke")
 async def entrypoint_perps_funding(request: FundingRequest):
     """
