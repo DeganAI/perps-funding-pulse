@@ -619,7 +619,7 @@ async def x402_metadata():
         ]
     }
 
-    return JSONResponse(content=metadata, status_code=402)
+    return JSONResponse(content=metadata, status_code=200)
 
 
 @app.get("/health")
