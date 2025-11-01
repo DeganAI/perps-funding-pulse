@@ -32,6 +32,11 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+# Configuration
+payment_address = os.getenv("PAYMENT_ADDRESS", "0x01D11F7e1a46AbFC6092d7be484895D2d505095c")
+base_url = os.getenv("BASE_URL", "https://perps-funding-pulse-production.up.railway.app")
+free_mode = os.getenv("FREE_MODE", "false").lower() == "true"
+
 # CORS
 app.add_middleware(
     CORSMiddleware,
@@ -41,10 +46,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# x402 Payment Middleware
-payment_address = os.getenv("PAYMENT_ADDRESS", "0x01D11F7e1a46AbFC6092d7be484895D2d505095c")
-base_url = os.getenv("BASE_URL", "https://perps-funding-pulse-production.up.railway.app")
-free_mode = os.getenv("FREE_MODE", "false").lower() == "true"
+# x402 Payment Verification Middleware
+app.add_middleware(
+    X402Middleware,
+    payment_address=payment_address,
+    base_url=base_url,
+    facilitator_url="https://facilitator.daydreams.systems",
+    free_mode=free_mode,
+)
 
 if not free_mode:
     logger.info("x402 payment verification enabled")
