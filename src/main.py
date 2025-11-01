@@ -563,7 +563,7 @@ async def x402_metadata():
                 "scheme": "exact",
                 "network": "base",
                 "maxAmountRequired": "50000",  # 0.05 USDC (6 decimals)
-                "resource": f"{base_url}/perps/funding",
+                "resource": f"{base_url}/entrypoints/perps-funding-pulse/invoke",
                 "description": "Get real-time perpetual funding rates, open interest, and market skew",
                 "mimeType": "application/json",
                 "payTo": payment_address,
