@@ -558,6 +558,8 @@ async def x402_metadata():
     """x402 protocol metadata for service discovery"""
     metadata = {
         "x402Version": 1,
+        "name": "Perps Funding Pulse",
+        "serviceDescription": "Real-time perpetual futures funding rates, open interest, and market skew across major exchanges (Binance, Bybit, OKX, Hyperliquid)",
         "accepts": [
             {
                 "scheme": "exact",
