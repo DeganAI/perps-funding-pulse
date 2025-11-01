@@ -569,6 +569,50 @@ async def x402_metadata():
                 "payTo": payment_address,
                 "maxTimeoutSeconds": 30,
                 "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",  # USDC on Base
+                "outputSchema": {
+                    "input": {
+                        "type": "http",
+                        "method": "POST",
+                        "bodyType": "json",
+                        "bodyFields": {
+                            "venue_ids": {
+                                "type": "array",
+                                "required": True,
+                                "description": "Exchanges to query (e.g., ['binance', 'bybit', 'okx'])"
+                            },
+                            "markets": {
+                                "type": "array",
+                                "required": True,
+                                "description": "Markets to track (e.g., ['BTC-PERP', 'ETH-PERP'])"
+                            }
+                        }
+                    },
+                    "output": {
+                        "type": "object",
+                        "properties": {
+                            "total_markets": {"type": "integer"},
+                            "markets": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "venue": {"type": "string"},
+                                        "market": {"type": "string"},
+                                        "funding_rate": {"type": "number"},
+                                        "next_funding_time": {"type": "string"},
+                                        "open_interest": {"type": "number"}
+                                    }
+                                }
+                            },
+                            "timestamp": {"type": "string"}
+                        }
+                    }
+                },
+                "extra": {
+                    "supported_venues": ["Binance", "Bybit", "OKX", "Hyperliquid"],
+                    "features": ["real-time funding rates", "open interest tracking", "next funding time", "market skew analysis"],
+                    "accuracy": "Live data from exchange APIs"
+                }
             }
         ]
     }
