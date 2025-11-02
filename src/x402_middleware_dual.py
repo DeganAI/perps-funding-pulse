@@ -160,6 +160,29 @@ class X402Middleware(BaseHTTPMiddleware):
                     "payTo": self.payment_address,
                     "maxTimeoutSeconds": 30,
                     "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",  # USDC on Base
+                    "outputSchema": {
+                        "input": {
+                            "type": "http",
+                            "method": "POST",
+                            "bodyType": "json",
+                            "bodyFields": {
+                                "venue_ids": {
+                                    "type": "array",
+                                    "required": True,
+                                    "description": "Perpetual exchanges to query (e.g., ['binance', 'bybit', 'okx'])"
+                                },
+                                "markets": {
+                                    "type": "array",
+                                    "required": True,
+                                    "description": "Specific markets to track (e.g., ['BTC/USDT:USDT', 'ETH/USDT:USDT'])"
+                                }
+                            }
+                        },
+                        "output": {
+                            "type": "object",
+                            "description": "Funding rate data with venue-specific metrics"
+                        }
+                    }
                 }
             ]
         }
@@ -225,6 +248,18 @@ class X402Middleware(BaseHTTPMiddleware):
                         "payTo": self.payment_address,
                         "maxTimeoutSeconds": 30,
                         "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                        "outputSchema": {
+                            "input": {
+                                "type": "http",
+                                "method": "POST",
+                                "bodyType": "json",
+                                "bodyFields": {
+                                    "venue_ids": {"type": "array", "required": True, "description": "Perpetual exchanges to query"},
+                                    "markets": {"type": "array", "required": True, "description": "Specific markets to track"}
+                                }
+                            },
+                            "output": {"type": "object", "description": "Funding rate data with venue-specific metrics"}
+                        }
                     }]
                 }
             )

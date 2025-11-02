@@ -719,13 +719,54 @@ async def entrypoint_perps_funding_get():
             {
                 "scheme": "exact",
                 "network": "base",
-                "maxAmountRequired": "50000",
+                "maxAmountRequired": "50000",  # 0.05 USDC (6 decimals)
                 "resource": f"{base_url}/entrypoints/perps-funding-pulse/invoke",
                 "description": "Fetch current funding rate, next tick, and open interest for perps markets",
                 "mimeType": "application/json",
                 "payTo": payment_address,
                 "maxTimeoutSeconds": 30,
-                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",  # USDC on Base
+                "outputSchema": {
+                    "input": {
+                        "type": "http",
+                        "method": "POST",
+                        "bodyType": "json",
+                        "bodyFields": {
+                            "venue_ids": {
+                                "type": "array",
+                                "required": True,
+                                "description": "Perpetual exchanges to query (e.g., ['binance', 'bybit', 'okx'])"
+                            },
+                            "markets": {
+                                "type": "array",
+                                "required": True,
+                                "description": "Specific markets to track (e.g., ['BTC/USDT:USDT', 'ETH/USDT:USDT'])"
+                            }
+                        }
+                    },
+                    "output": {
+                        "type": "object",
+                        "description": "Funding rate data with venue-specific metrics",
+                        "properties": {
+                            "total_markets": {"type": "integer"},
+                            "markets": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "venue": {"type": "string"},
+                                        "market": {"type": "string"},
+                                        "funding_rate": {"type": "number"},
+                                        "time_to_next": {"type": "integer"},
+                                        "open_interest": {"type": "number"},
+                                        "skew": {"type": "number"}
+                                    }
+                                }
+                            },
+                            "timestamp": {"type": "string"}
+                        }
+                    }
+                }
             }
         ]
     }
