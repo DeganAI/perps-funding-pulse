@@ -124,6 +124,11 @@ async def root():
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Perps Funding Pulse - Real-Time Funding Rates</title>
+        <meta name="description" content="Real-time perpetual futures funding rates across major exchanges via x402 micropayments">
+        <meta property="og:title" content="Perps Funding Pulse">
+        <meta property="og:description" content="Real-time perpetual futures funding rates across major exchanges via x402 micropayments">
+        <meta property="og:image" content="https://perps-funding-pulse-production.up.railway.app/favicon.ico">
+        <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
         <style>
             * {{ margin: 0; padding: 0; box-sizing: border-box; }}
             body {{
@@ -618,6 +623,14 @@ async def x402_metadata():
     }
 
     return JSONResponse(content=metadata, status_code=200)
+
+
+@app.get("/favicon.ico")
+async def favicon():
+    """Favicon endpoint"""
+    from fastapi.responses import Response
+    svg_content = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">📊</text></svg>'
+    return Response(content=svg_content, media_type="image/svg+xml")
 
 
 @app.get("/health")
