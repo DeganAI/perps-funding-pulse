@@ -2,23 +2,17 @@
   "name": "perps-funding-pulse",
   "version": "1.0.0",
   "description": "Real-time perpetual futures funding rates via x402",
-  "main": "index.ts",
   "type": "module",
   "scripts": {
-    "start": "tsx index.ts",
-    "dev": "tsx watch index.ts",
-    "build": "tsc"
+    "dev": "bun run --hot src/index.ts",
+    "start": "bun run src/index.ts"
   },
   "dependencies": {
-    "@lucid-dreams/agent-kit": "^0.2.22",
-    "hono": "^4.0.0",
-    "@hono/node-server": "^1.0.0"
+    "@lucid-dreams/agent-kit": "^0.2.24",
+    "hono": "^4.x",
+    "zod": "^3.x"
   },
   "devDependencies": {
-    "tsx": "^4.0.0",
-    "typescript": "^5.0.0"
-  },
-  "engines": {
-    "node": ">=20.0.0"
+    "bun-types": "^1.x"
   }
 }
