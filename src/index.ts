@@ -1,4 +1,5 @@
 import { createAgentApp } from "@lucid-dreams/agent-kit";
+import { Hono } from "hono";
 import { z } from "zod";
 
 // Input schema
@@ -277,12 +278,63 @@ addEntrypoint({
   },
 });
 
+// Create wrapper app for internal API
+const wrapperApp = new Hono();
+
+// Internal API endpoint (no payment required)
+wrapperApp.post("/api/internal/perps-funding-pulse", async (c) => {
+  try {
+    // Check API key authentication
+    const apiKey = c.req.header("X-Internal-API-Key");
+    const expectedKey = process.env.INTERNAL_API_KEY || "defi-guardian-internal-2024";
+
+    if (apiKey !== expectedKey) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    // Get input from request body
+    const input = await c.req.json();
+
+    // Validate input
+    const validatedInput = FundingInputSchema.parse(input);
+
+    // Call the same logic as x402 endpoint
+    const supportedVenues = getSupportedVenues();
+    const invalidVenues = validatedInput.venue_ids.filter(v => !supportedVenues.includes(v));
+
+    if (invalidVenues.length > 0) {
+      return c.json({
+        error: `Venues not supported: ${invalidVenues.join(', ')}. Available: ${supportedVenues.join(', ')}`
+      }, 400);
+    }
+
+    const fundingData = await fetchFundingData(validatedInput.venue_ids, validatedInput.markets);
+
+    if (fundingData.length === 0) {
+      return c.json({ error: 'Failed to fetch funding data from any venue' }, 500);
+    }
+
+    return c.json({
+      total_markets: fundingData.length,
+      markets: fundingData,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error("[INTERNAL API] Error:", error);
+    return c.json({ error: error instanceof Error ? error.message : "Internal error" }, 500);
+  }
+});
+
+// Mount the x402 agent app (public, requires payment)
+wrapperApp.route("/", app);
+
 // Export for Bun
 export default {
   port: parseInt(process.env.PORT || '3000'),
-  fetch: app.fetch,
+  fetch: wrapperApp.fetch,
 };
 
 console.log(`🚀 Perps Funding Pulse running on port ${process.env.PORT || 3000}`);
 console.log(`📝 Manifest: ${process.env.BASE_URL}/.well-known/agent.json`);
 console.log(`💰 Payment address: ${config.payments?.payTo}`);
+console.log(`🔓 Internal API: /api/internal/perps-funding-pulse (requires API key)`);
