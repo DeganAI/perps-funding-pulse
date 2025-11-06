@@ -46,3 +46,8 @@ htmlcov/
 
 # Logs
 *.log
+
+# Railway
+.railway/
+node_modules/
+bun.lock
